@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  mariadb:
+    image: 'mariadb:10.2'
+    container_name: 'testlinkdb'
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=testlink
+      - MYSQL_DATABASE=testlink
+      - MYSQL_USER=testlink
+      - MYSQL_PASSWORD=testlink
+    volumes:
+      - testlink_data:/var/lib/mysql
+
+  testlink:
+    image: 'bitnami/testlink:1.9.17'
+    container_name: 'testlink'
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - testlink:/bitnami
+    depends_on:
+      - mariadb
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT_NUMBER=3306
+      - TESTLINK_DATABASE_PASSWORD=testlink
+      - TESTLINK_DATABASE_USER=testlink
+      - TESTLINK_DATABASE_NAME=testlink
+      - TESTLINK_USERNAME=admin
+      - TESTLINK_PASSWORD=admin
+
+volumes:
+  testlink:
+  testlink_data:
